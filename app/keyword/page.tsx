@@ -8,6 +8,7 @@ export default function Home() {
   return (
     <>
       <div className="backgroundDiv h-screen bg-cover bg-center" style={{ backgroundImage: 'url(/robotBackground.png)' }}>
+        {/* Width is fixed to 500 pixels for now */}
         <div className="contentContainer text-center w-[500px] mx-auto">
           <div className="titleContainer py-10">
             <h1 className="welcomeText text-white text-7xl"> WELCOME </h1>
