@@ -16,6 +16,16 @@ export default function Home() {
   const [roomCodeToCheck, setRoomCodeToCheck] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
   const [showRules, setShowRules] = useState(false);
+
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  // Set mouse position
+  const handleMouseMove = (e) => {
+    setMousePosition({
+      x: e.clientX,
+      y: e.clientY,
+    });
+  };
+
   // Trigger room existence check only if roomCodeToCheck is set
 
   // Generate room code
@@ -98,42 +108,51 @@ export default function Home() {
 
   return (
     <>
-      <div className="backgroundDiv bg-robot bg-cover h-screen bg-center-left-10px" >
-        {/* Width is fixed to 500 pixels for now */}
-        <div className={`contentContainer text-center w-[500px] mx-auto transition-all duration-500 ease-in-out 
-          ${showRules ? 'opacity-0 translate-y-10' : 'opacity-100 translate-y-0'}`}>
+      <div className="relative h-screen bg-black overflow-hidden"
+          onMouseMove={handleMouseMove}
+        >
+        <div className="absolute inset-0 bg-robot bg-cover"
+          style={{
+            clipPath: `circle(150px at ${mousePosition.x}px ${mousePosition.y}px)`,
+          }}
+        >
+          {/* Width is fixed to 500 pixels for now */}
+          <div className={`contentContainer text-center w-[500px] mx-auto transition-all duration-500 ease-in-out 
+            ${showRules ? 'opacity-0 translate-y-10' : 'opacity-100 translate-y-0'}`}>
 
-          {/* The original page will be hidden once the 'HOW TO PLAY' button is clicked */}
-          {!showRules && (
-            <div>
-              <div className="titleContainer py-10">
-                <h1 className="welcomeText text-white text-7xl"> WELCOME </h1>
-                <h1 className="toText text-white text-7xl"> TO </h1>
-                <div className="keywordDiv border-4 border-white rounded-3xl p-8 ">
-                  <h1 className="keyWordText text-white text-7xl"> KEYWORD </h1>
+            {/* The original page will be hidden once the 'HOW TO PLAY' button is clicked */}
+            {!showRules && (
+              <div>
+                <div className="titleContainer py-10">
+                  <h1 className="welcomeText text-white text-7xl"> WELCOME </h1>
+                  <h1 className="toText text-white text-7xl"> TO </h1>
+                  <div className="keywordDiv border-4 border-white rounded-3xl p-8 ">
+                    <h1 className="keyWordText text-white text-7xl"> KEYWORD </h1>
+                  </div>
+                </div>
+                <div>
+                  <HostRoomModal onSubmit={hostGame} />
+                  <FormModal onSubmit={handleJoin} />
+                </div>
+                <div>
+                  <GreyButton label="HOW TO PLAY" onClick={handleShowRules} />
                 </div>
               </div>
-              <div>
-                <HostRoomModal onSubmit={hostGame} />
-                <FormModal onSubmit={handleJoin} />
-              </div>
-              <div>
-                <GreyButton label="HOW TO PLAY" onClick={handleShowRules} />
+            )}
+          </div>
+
+          {/* The game rules are shown once the 'HOW TO PLAY' button is clicked */}
+          {showRules && (
+            <div className="absolute inset-0 backdrop-blur-sm">
+              <div className="rulesContainer fixed bottom-0 left-0 w-full h-[65%] bg-[#0C2820] z-10 border-[10px] border-black
+            rounded-tl-3xl rounded-tr-3xl animate-slide-up">
+                <Rules title="HOW TO PLAY" content={howToPlayContent} onClose={handleHideRules} />
               </div>
             </div>
           )}
         </div>
-
-        {/* The game rules are shown once the 'HOW TO PLAY' button is clicked */}
-        {showRules && (
-          <div className="absolute inset-0 backdrop-blur-sm">
-            <div className="rulesContainer fixed bottom-0 left-0 w-full h-[65%] bg-[#0C2820] z-10 border-[10px] border-black
-           rounded-tl-3xl rounded-tr-3xl animate-slide-up">
-              <Rules title="HOW TO PLAY" content={howToPlayContent} onClose={handleHideRules} />
-            </div>
-          </div>
-        )}
       </div>
+      
     </>
   );
 }
